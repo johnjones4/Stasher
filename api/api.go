@@ -34,17 +34,7 @@ func New(runtime *core.RuntimeContext) *API {
 		})
 
 		r.Get("/stash", a.stash)
-
-		// r.Route("/note", func(r chi.Router) {
-		// 	r.Use(a.verifyToken)
-
-		// 	r.Get("/", a.getNotes)
-		// 	r.Post("/", a.newNote)
-		// 	r.Route("/{id}", func(r chi.Router) {
-		// 		r.Get("/", a.getNote)
-		// 		r.Put("/", a.updateNote)
-		// 	})
-		// })
+		r.Post("/telegram", a.telegram)
 	})
 
 	return a

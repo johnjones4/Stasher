@@ -24,4 +24,14 @@ type Processor func(req *Item) error
 type RuntimeContext struct {
 	Processors []Processor
 	StashKey   string
+	Env        Env
+}
+
+type Env struct {
+	StashKey            string `env:"STASH_KEY"`
+	TelegramSecretToken string `env:"TELEGRAM_SECRET_TOKEN"`
+	TelegramAllowedId   string `env:"TELEGRAM_ALLOWED_ID"`
+	TelegramAPIToken    string `env:"TELEGRAM_API_TOKEN"`
+	DataDir             string `env:"DATA_DIR"`
+	HttpHost            string `env:"HTTP_HOST"`
 }

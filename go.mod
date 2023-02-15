@@ -7,6 +7,7 @@ require github.com/PuerkitoBio/goquery v1.8.0
 require github.com/pquerna/cachecontrol v0.0.0-20180517163645-1555304b9b35 // indirect
 
 require (
+	github.com/Netflix/go-env v0.0.0-20220526054621-78278af1949d
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/flytam/filenamify v1.1.2
 	github.com/go-chi/chi/v5 v5.0.8
