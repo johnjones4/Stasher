@@ -2,16 +2,15 @@ package api
 
 import (
 	"encoding/json"
-	"log"
 	"main/core"
 	"net/http"
 	"net/url"
 )
 
-func jsonResponse(w http.ResponseWriter, status int, info any) {
+func (a *API) jsonResponse(w http.ResponseWriter, status int, info any) {
 	bytes, err := json.Marshal(info)
 	if err != nil {
-		log.Println(err)
+		a.log.Error(err)
 		w.WriteHeader(http.StatusInternalServerError)
 		return
 	}
@@ -21,13 +20,13 @@ func jsonResponse(w http.ResponseWriter, status int, info any) {
 	w.Write(bytes)
 }
 
-func errorResponse(w http.ResponseWriter, status int, err error) {
-	log.Print(err)
+func (a *API) errorResponse(w http.ResponseWriter, status int, err error) {
+	a.log.Error(err)
 	msg := map[string]any{
 		"ok":      false,
 		"message": err.Error(),
 	}
-	jsonResponse(w, status, msg)
+	a.jsonResponse(w, status, msg)
 }
 
 func (a *API) process(urlStr string) (core.Item, error) {
@@ -37,7 +36,8 @@ func (a *API) process(urlStr string) (core.Item, error) {
 	}
 
 	item := core.Item{
-		URL: parsedUrl,
+		URL:  parsedUrl,
+		Info: make(map[string]any),
 	}
 
 	for _, processor := range a.runtime.Processors {

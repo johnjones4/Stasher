@@ -12,20 +12,20 @@ import (
 var templateStr string
 
 func (a *API) stash(w http.ResponseWriter, r *http.Request) {
-	if r.URL.Query().Get("key") != a.runtime.StashKey {
-		errorResponse(w, http.StatusForbidden, errors.New("access denied"))
+	if r.URL.Query().Get("key") != a.runtime.Env.StashKey {
+		a.errorResponse(w, http.StatusForbidden, errors.New("access denied"))
 		return
 	}
 
 	item, err := a.process(r.URL.Query().Get("url"))
 	if err != nil {
-		errorResponse(w, http.StatusBadRequest, err)
+		a.errorResponse(w, http.StatusBadRequest, err)
 		return
 	}
 
 	temp, err := template.New("t").Parse(templateStr)
 	if err != nil {
-		errorResponse(w, http.StatusInternalServerError, err)
+		a.errorResponse(w, http.StatusInternalServerError, err)
 		return
 	}
 

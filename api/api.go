@@ -6,21 +6,24 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"go.uber.org/zap"
 )
 
 type API struct {
 	runtime *core.RuntimeContext
 	r       *chi.Mux
+	log     *zap.SugaredLogger
 }
 
 func (a *API) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	a.r.ServeHTTP(w, r)
 }
 
-func New(runtime *core.RuntimeContext) *API {
+func New(runtime *core.RuntimeContext, log *zap.SugaredLogger) *API {
 	a := &API{
 		runtime: runtime,
 		r:       chi.NewRouter(),
+		log:     log,
 	}
 
 	a.r.Use(middleware.RequestID)

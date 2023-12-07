@@ -14,6 +14,10 @@ import (
 	"golang.org/x/net/html"
 )
 
+const (
+	structeredDataKey = "structuredData"
+)
+
 func StructuredData(req *core.Item) error {
 	urlStr := req.URL.String()
 	if len(req.Body) == 0 || urlStr == "" || strings.Index(req.ContentType, core.ContentTypeHTML) != 0 {
@@ -30,11 +34,7 @@ func StructuredData(req *core.Item) error {
 		return err
 	}
 
-	sd := append(sd1, sd2...)
-
-	fformatted, _ := json.Marshal(sd)
-	req.Body = fformatted
-	req.ContentType = core.ContentTypeJson
+	req.Info[structeredDataKey] = append(sd1, sd2...)
 
 	return nil
 }

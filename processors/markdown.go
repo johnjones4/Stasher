@@ -1,12 +1,12 @@
 package processors
 
 import (
-	"encoding/json"
 	"fmt"
 	"main/core"
 	"strings"
 	"time"
 
+	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/johnjones4/duration"
 )
 
@@ -15,20 +15,30 @@ func Markdown(req *core.Item) error {
 		return nil
 	}
 
-	switch req.ContentType {
-	case core.ContentTypeJson:
-		var data []core.StructuredDataProperty
-		err := json.Unmarshal(req.Body, &data)
-		if err != nil {
-			return err
+	if data, ok := req.Info[structeredDataKey]; ok {
+		if sd, ok := data.([]core.StructuredDataProperty); ok {
+			if recipe, ok := findData(sd, []string{"http://schema.org/Recipe"}); ok {
+				var err error
+				req.Name, req.Body, err = formatRecipe(recipe, req)
+				if err != nil {
+					return err
+				}
+				req.ContentType = core.ContentTypeMarkdown
+				return nil
+			}
 		}
+	}
 
-		if recipe, ok := findData(data, []string{"http://schema.org/Recipe"}); ok {
-			req.Name, req.Body, err = formatRecipe(recipe, req)
+	if data, ok := req.Info[htmlContentKey]; ok {
+		if htmlText, ok := data.(string); ok {
+			converter := md.NewConverter("", true, nil)
+			markdown, err := converter.ConvertString(htmlText)
 			if err != nil {
 				return err
 			}
+			req.Body = []byte(markdown)
 			req.ContentType = core.ContentTypeMarkdown
+			return nil
 		}
 	}
 

@@ -17,13 +17,13 @@ type Item struct {
 	ContentType string
 	Body        []byte
 	Name        string
+	Info        map[string]any
 }
 
 type Processor func(req *Item) error
 
 type RuntimeContext struct {
 	Processors []Processor
-	StashKey   string
 	Env        Env
 }
 
